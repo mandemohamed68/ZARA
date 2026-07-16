@@ -1,0 +1,8 @@
+{
+  "name": "ZARA GALLERY",
+  "description": "Logiciel de gestion de caisse pour Zara Gallery (Prêt-à-porter tous âges, tous sexes) au Burkina Faso.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

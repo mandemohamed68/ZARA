@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zara_app
+    restart: always
+    ports:
+      - "8000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      # Mount SQLite database, messages file, and uploaded product images to host filesystem
+      # This guarantees that updating or rebuilding your containers will never lose any data!
+      - ./data:/app_data
+      - ./uploads:/app/uploads
+      - ./zara_database.json:/app/zara_database.json
+      - ./zara_messages.json:/app/zara_messages.json
