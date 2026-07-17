@@ -267,8 +267,8 @@ export default function Inventory({ products, setProducts, movements, trackMovem
     ];
 
     const ws = XLSX.utils.json_to_sheet(data, { header: headers });
-    XLSX.utils.book_append_sheet(wb, ws, "Modèle Zara");
-    XLSX.writeFile(wb, "modele_importation_zara.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, `Modèle ${settings?.storeName || 'Inventaire'}`);
+    XLSX.writeFile(wb, `modele_importation_${(settings?.storeName || 'inventaire').toLowerCase().replace(/\s+/g, '_')}.xlsx`);
   };
 
   // Detailed complete professional Excel export
@@ -357,7 +357,7 @@ export default function Inventory({ products, setProducts, movements, trackMovem
     XLSX.utils.book_append_sheet(wb, wsDetails, "Inventaire Détaillé");
     XLSX.utils.book_append_sheet(wb, wsCategory, "Analyse par Catégorie");
 
-    XLSX.writeFile(wb, `Inventaire_Zara_Detaille_${new Date().toISOString().split('T')[0]}.xlsx`);
+    XLSX.writeFile(wb, `Inventaire_${(settings?.storeName || 'Stock').replace(/\s+/g, '_')}_Detaille_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
   // Excel Importer
@@ -485,7 +485,7 @@ export default function Inventory({ products, setProducts, movements, trackMovem
           <div>
             <h1 className="text-4xl font-black uppercase tracking-tighter text-black flex items-center gap-3">
               <Package className="w-8 h-8 text-neutral-400" />
-              Inventaire <span className="text-neutral-300 font-light">Zara</span>
+              Inventaire <span className="text-neutral-300 font-light">{settings?.storeName || 'Zara'}</span>
             </h1>
             <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.3em] mt-1 ml-11">Gestion des stocks et des fiches articles</p>
           </div>
@@ -526,7 +526,7 @@ export default function Inventory({ products, setProducts, movements, trackMovem
               className="group relative px-6 py-4 bg-black text-white text-[10px] font-black uppercase tracking-[0.25em] flex items-center gap-2.5 hover:bg-neutral-800 transition-all shadow-xl active:scale-95 cursor-pointer ml-auto lg:ml-0"
             >
               <Plus className="w-4 h-4 transition-transform group-hover:rotate-90" />
-              Nouvel Article Zara
+              Nouvel Article {settings?.storeName || 'Zara'}
             </button>
           </div>
         </div>
@@ -663,7 +663,7 @@ export default function Inventory({ products, setProducts, movements, trackMovem
             >
               <div className="p-8 border-b border-neutral-100 flex justify-between items-center bg-white sticky top-0 z-10">
                 <div>
-                  <h3 className="text-2xl font-black uppercase tracking-tighter">{editingProduct ? 'Modifier l\'Article Zara' : 'Nouvel Article Zara'}</h3>
+                  <h3 className="text-2xl font-black uppercase tracking-tighter">{editingProduct ? `Modifier l'Article ${settings?.storeName || 'Zara'}` : `Nouvel Article ${settings?.storeName || 'Zara'}`}</h3>
                   <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Configuration de la fiche produit et des stocks</p>
                 </div>
                 <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="text-neutral-300 hover:text-black transition-colors">
@@ -861,7 +861,7 @@ export default function Inventory({ products, setProducts, movements, trackMovem
 
                 <div className="flex gap-4 pt-10 border-t border-neutral-100 sticky bottom-0 bg-white">
                   <button type="button" onClick={() => { setIsModalOpen(false); resetForm(); }} className="flex-1 py-5 text-[10px] font-black uppercase tracking-widest text-neutral-400 border border-neutral-100 hover:text-black hover:border-black transition-all">Abandonner</button>
-                  <button type="submit" className="flex-[2] py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] hover:bg-neutral-800 transition-all shadow-2xl">Enregistrer la Fiche Zara</button>
+                  <button type="submit" className="flex-[2] py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] hover:bg-neutral-800 transition-all shadow-2xl">Enregistrer la Fiche {settings?.storeName || 'Zara'}</button>
                 </div>
               </form>
             </motion.div>
@@ -994,9 +994,9 @@ export default function Inventory({ products, setProducts, movements, trackMovem
                 {/* Brand Header */}
                 <div className="flex justify-between items-start border-b-4 border-black pb-8 mb-8">
                   <div>
-                    <h1 className="text-4xl font-black uppercase tracking-tighter">ZARA BOUTIQUE</h1>
+                    <h1 className="text-4xl font-black uppercase tracking-tighter">{settings?.storeName || 'ZARA BOUTIQUE'}</h1>
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-500 mt-1">PARFUMERIE & PRÊT-À-PORTER DE LUXE</p>
-                    <p className="text-[9px] text-neutral-400 font-bold uppercase mt-3">Sénégal • Service d'Inventaire Automatisé</p>
+                    <p className="text-[9px] text-neutral-400 font-bold uppercase mt-3">{settings?.storeAddress || 'Sénégal'} • Service d'Inventaire Automatisé</p>
                   </div>
                   <div className="text-right">
                     <div className="bg-black text-white px-4 py-1.5 text-[9px] font-black uppercase tracking-widest inline-block mb-3">
@@ -1155,13 +1155,13 @@ export default function Inventory({ products, setProducts, movements, trackMovem
                     <h4 className="text-[9px] font-black uppercase tracking-wider text-neutral-400 mb-8 w-48 text-left">Validation de la Direction</h4>
                     <div className="border-b border-neutral-300 w-48 h-8 mb-2"></div>
                     <p className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest text-left w-48">Date : ____/____/2026</p>
-                    <p className="text-[7px] text-neutral-300 font-bold uppercase mt-1 text-left w-48">Cachet Zara Sénégal & Signature</p>
+                    <p className="text-[7px] text-neutral-300 font-bold uppercase mt-1 text-left w-48">Cachet {settings?.storeName || 'Zara'} & Signature</p>
                   </div>
                 </div>
 
                 {/* Automated verification watermark */}
                 <div className="mt-16 text-center text-[7px] text-neutral-300 font-bold uppercase tracking-widest border-t border-neutral-100 pt-4">
-                  Généré informatiquement via Zara Stock Control System • f286983b-33f8-41ee-b3f6-01d3584db7a2
+                  Généré informatiquement via {settings?.storeName || 'Zara'} Stock Control System • f286983b-33f8-41ee-b3f6-01d3584db7a2
                 </div>
               </div>
             </motion.div>
