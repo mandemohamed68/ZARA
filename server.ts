@@ -1175,7 +1175,7 @@ async function syncAllStateToIndividualTables(parsed: any, isMariaDB: boolean, p
 
 async function startServer() {
   const app = express();
-  const PORT = parseInt(process.env.PORT || '3000', 10);
+  const PORT = 3000;
 
   app.use(express.json({ limit: '50mb' }));
 
@@ -1579,6 +1579,12 @@ async function startServer() {
           is_database_sync_enabled INT
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
       `);
+
+      try {
+        await mariadbPool.query(`ALTER TABLE settings ADD COLUMN is_database_sync_enabled INT DEFAULT 1;`);
+      } catch (alterErr) {
+        // Silently fail if column already exists
+      }
     } catch (err: any) {
       console.warn('⚠️ DB warning:', err.message);
       console.warn('👉 MariaDB is not reachable (normal in the Cloud Run sandbox). Falling back to SQLite for preview.');
@@ -2297,27 +2303,12 @@ async function startServer() {
     });
   }
 
-  const listenWithFallback = (portToTry: number) => {
-    const serverInstance = app.listen(portToTry, '0.0.0.0', () => {
-      console.log('----------------------------------------------------');
-      console.log(`ZARA GALLERY - SERVEUR LOCAL ACTIVÉ`);
-      console.log(`Accès local : http://localhost:${portToTry}`);
-      console.log(`Accès Boutique (Wi-Fi) : http://[VOTRE-IP]:${portToTry}`);
-      console.log('----------------------------------------------------');
-    });
-
-    serverInstance.on('error', (err: any) => {
-      const fallbackPort = PORT + 1;
-      if (err.code === 'EADDRINUSE' && portToTry === PORT) {
-        console.warn(`⚠️ Le port ${portToTry} est déjà occupé. Tentative de repli automatique sur le port ${fallbackPort}...`);
-        listenWithFallback(fallbackPort);
-      } else {
-        console.error('❌ Erreur de démarrage du serveur :', err);
-      }
-    });
-  };
-
-  listenWithFallback(PORT);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log('----------------------------------------------------');
+    console.log(`ZARA GALLERY - SERVEUR POS ACTIVÉ`);
+    console.log(`Port d'écoute : ${PORT}`);
+    console.log('----------------------------------------------------');
+  });
 }
 
 startServer();
